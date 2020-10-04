@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@gitgraph/js"></script>
+</head>
+
+<body>
+    <div id="graph-container"></div>
+
+    <script type="text/javascript">
+        const graphContainer = document.getElementById("graph-container");
+        const gitgraph = GitgraphJS.createGitgraph(graphContainer);
+
+        commitMaster(gitgraph);
+        commitDevelop(gitgraph);
+        commitToFeatureSignOn(gitgraph);
+        mergeFeatDevMaster(gitgraph);
+        commitDevelopForV4(gitgraph);
+        commitSupportV3(gitgraph);
+        mergeDevelopToMaster(gitgraph);
+        autoUpdateChangeLog(gitgraph);
+        commitSupportV3Log(gitgraph);
+
+        function commitMaster(gitgraph) {
+            const master = gitgraph
+                .branch("master")
+                .commit("Initiaize repository");
+        }
+
+        function commitDevelop(gitgraph) {
+            const develop = gitgraph
+                .branch("develop")
+                .commit("Add something");
+        }
+
+        function commitToFeatureSignOn(gitgraph) {
+            const featSignOn = gitgraph
+                .branch("feature-sign-on")
+                .commit("feat(signon): add signon ui")
+                .commit("feat(signon): integrate signon with backend")
+                .commit("feat(signon): support first time signon approval");
+        }
+
+        function mergeFeatDevMaster(gitgraph) {
+            const feature = gitgraph.branch("feature-sign-on");
+            const develop = gitgraph.branch("develop");
+            const master = gitgraph.branch("master");
+
+            develop.merge(feature);
+            master.merge(develop);
+            master.tag("v3.0.3000");
+        }
+
+        function commitSupportV3(gitgraph) {
+            const supportv3 = gitgraph
+                .branch("master")
+                .branch("support/v3")
+                .commit("fix: some fix bug 1")
+                .tag("3.0.3001");
+        }
+
+        function commitDevelopForV4(gitgraph) {
+            gitgraph.branch("develop")
+                .commit("feat: start new feature mvp4")
+                .commit("feat: add ui for ORFT")
+                .commit("feat: integrated ORFT with backend");
+        }
+
+        function mergeDevelopToMaster(gitgraph) {
+            const develop = gitgraph.branch("develop");
+            const master = gitgraph.branch("master");
+
+            master.merge(develop);
+        }
+
+        function autoUpdateChangeLog(gitgraph) {
+            gitgraph.branch("master")
+                .tag("v4.0.4000")
+                .commit("docs: update CHANGELOG.md");
+        }
+
+        function commitSupportV3Log(gitgraph) {
+            const supportv3 = gitgraph
+                .branch("support/v3")
+                .commit("fix: some fix bug 2")
+                .tag("3.0.3002")
+                .commit("docs: update CHANGELOG.md");
+        }
+    </script>
+</body>
+
+</html>
